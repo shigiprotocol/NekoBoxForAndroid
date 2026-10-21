@@ -95,6 +95,16 @@ jobs:
           APK=$(find app/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname $APK)
           echo "APK=$APK" >> $GITHUB_ENV
+      - name: Verify APKs
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          for f in $APK/*.apk; do
+            n=$(basename $f)
+            pkg=$($BT/aapt2 dump badging $f | head -1)
+            sig=$($BT/apksigner verify -v --print-certs $f 2>&1 | grep -E "Verifies|Verified using|Signer #1 certificate DN|WARNING|ERROR" | tr '\n' ' ')
+            echo "::notice title=$n::$pkg | $sig"
+            $BT/apksigner verify $f
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: ShigiProtocol-APKs
