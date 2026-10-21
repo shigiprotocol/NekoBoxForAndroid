@@ -133,11 +133,15 @@
     </style>
 
     <style name="Theme.SagerNet.Pink_SSR">
-        <item name="colorPrimary">@color/color_pink_ssr</item>
-        <item name="colorPrimaryDark">@color/color_pink_ssr</item>
-        <item name="colorAccent">@color/material_pink_accent_200</item>
-        <item name="colorMaterial100">@color/material_pink_accent_100</item>
-        <item name="colorMaterial300">@color/color_pink_ssr</item>
+        <!-- ShigiProtocol theme: gray bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/shigi_gray</item>
+        <item name="colorPrimaryDark">@color/shigi_gray_dark</item>
+        <item name="colorAccent">@color/shigi_orange</item>
+        <item name="colorMaterial100">@color/shigi_orange_light</item>
+        <item name="colorMaterial300">@color/shigi_gray_light</item>
+        <item name="fabColorBackground">@color/shigi_orange</item>
+        <item name="primaryOrTextPrimary">@color/shigi_orange</item>
+        <item name="primaryOrTextSecondary">@color/shigi_orange</item>
     </style>
 
     <style name="Theme.SagerNet.Amber">
@@ -414,11 +418,15 @@
     </style>
 
     <style name="Theme.SagerNet.Dialog.Pink_SSR">
-        <item name="colorPrimary">@color/color_pink_ssr</item>
-        <item name="colorPrimaryDark">@color/color_pink_ssr</item>
-        <item name="colorAccent">@color/material_pink_accent_200</item>
-        <item name="colorMaterial100">@color/material_pink_accent_100</item>
-        <item name="colorMaterial300">@color/color_pink_ssr</item>
+        <!-- ShigiProtocol theme: gray bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/shigi_gray</item>
+        <item name="colorPrimaryDark">@color/shigi_gray_dark</item>
+        <item name="colorAccent">@color/shigi_orange</item>
+        <item name="colorMaterial100">@color/shigi_orange_light</item>
+        <item name="colorMaterial300">@color/shigi_gray_light</item>
+        <item name="fabColorBackground">@color/shigi_orange</item>
+        <item name="primaryOrTextPrimary">@color/shigi_orange</item>
+        <item name="primaryOrTextSecondary">@color/shigi_orange</item>
     </style>
 
     <style name="Theme.SagerNet.Dialog.Teal">

@@ -283,7 +283,13 @@
 
     <color name="fab_color_progress">@color/material_light_black</color>
 
-    <color name="color_pink_ssr">#fb7299</color>
+    <!-- ShigiProtocol: default theme slot now uses the logo colors -->
+    <color name="color_pink_ssr">#FF8C00</color>
+    <color name="shigi_orange">#FF8C00</color>
+    <color name="shigi_orange_light">#FFB74D</color>
+    <color name="shigi_gray">#555555</color>
+    <color name="shigi_gray_dark">#3D3D3D</color>
+    <color name="shigi_gray_light">#6E6E6E</color>
 
     <color name="color_ng_black_accent">#9E9E9E</color>
     <color name="color_ng_black_primary">#2B2B2B</color>
