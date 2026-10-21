@@ -103,9 +103,10 @@ class StatsBar @JvmOverloads constructor(
                 setStatus(app.getText(R.string.vpn_connected))
             }
             // auto run the connection test once after connecting
+            // (wait a bit so the core and DNS are warmed up, then retry quietly)
             activity.lifecycleScope.launch(Dispatchers.Main) {
-                delay(800L)
-                if (mySession == session && DataStore.serviceState.connected) testConnection()
+                delay(2000L)
+                if (mySession == session && DataStore.serviceState.connected) testConnection(auto = true)
             }
         } else {
             postWhenStarted {
@@ -160,7 +161,7 @@ class StatsBar @JvmOverloads constructor(
     }
 
     @SuppressLint("SetTextI18n")
-    fun testConnection() {
+    fun testConnection(auto: Boolean = false) {
         if (testing) return
         val activity = context as MainActivity
         val mySession = session
@@ -169,7 +170,21 @@ class StatsBar @JvmOverloads constructor(
         setStatus(app.getText(R.string.connection_test_testing))
         runOnDefaultDispatcher {
             try {
-                val elapsed = activity.urlTest()
+                // the first request after connecting can be slow (cold DNS / handshake),
+                // so the automatic test retries a few times before reporting a failure
+                var elapsed = -1
+                var lastError: Exception? = null
+                for (attempt in 1..(if (auto) 3 else 2)) {
+                    try {
+                        elapsed = activity.urlTest()
+                        break
+                    } catch (e: Exception) {
+                        lastError = e
+                        if (mySession != session) break
+                        kotlinx.coroutines.delay(1500L)
+                    }
+                }
+                if (elapsed < 0) throw lastError ?: IllegalStateException("test failed")
                 val pingText = app.getString(R.string.shigi_ping, elapsed)
                 onMainDispatcher {
                     if (mySession == session) setStatus(pingText + "   •   " + app.getString(R.string.shigi_getting_ip))
