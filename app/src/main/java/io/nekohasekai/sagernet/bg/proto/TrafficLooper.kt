@@ -100,7 +100,11 @@ class TrafficLooper
             }
 
             if (trafficUpdater == null) {
-                if (!proxy.isInitialized()) continue
+                if (!proxy.isInitialized()) {
+                    // fix: previously a busy loop (100% CPU) until the core finished starting
+                    delay(100L)
+                    continue
+                }
                 idMap.clear()
                 idMap[-1] = itemBypass
                 //

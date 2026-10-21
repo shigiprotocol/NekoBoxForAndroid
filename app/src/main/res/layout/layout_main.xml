@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textColor="?whiteOrTextPrimary"
                     android:textSize="16sp"
                     tools:text="@string/connection_test_available" />

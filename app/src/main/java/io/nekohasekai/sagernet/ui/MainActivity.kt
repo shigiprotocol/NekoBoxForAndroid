@@ -154,6 +154,13 @@ class MainActivity : ThemedActivity(),
         return connection.service!!.urlTest()
     }
 
+    fun queryExitInfo(): String {
+        if (!DataStore.serviceState.connected || connection.service == null) {
+            error("not started")
+        }
+        return connection.service!!.queryExitInfo()
+    }
+
     suspend fun importSubscription(uri: Uri) {
         val group: ProxyGroup
 
@@ -404,7 +411,9 @@ class MainActivity : ThemedActivity(),
     // may NOT called when app is in background
     // ONLY do UI update here, write DB in bg process
     override fun cbSpeedUpdate(stats: SpeedDisplayData) {
-        binding.stats.updateSpeed(stats.txRateProxy, stats.rxRateProxy)
+        binding.stats.updateSpeed(
+            stats.txRateProxy, stats.rxRateProxy, stats.txTotal, stats.rxTotal
+        )
     }
 
     override fun cbTrafficUpdate(data: TrafficData) {

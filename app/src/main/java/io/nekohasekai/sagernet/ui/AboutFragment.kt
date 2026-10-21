@@ -244,8 +244,9 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         haveUpdate && !releaseName.contains(BuildConfig.VERSION_NAME)
                     }
                     runOnMainDispatcher {
+                        // fix: requireContext() crashed if the page was closed before the check finished
+                        val context = context ?: return@runOnMainDispatcher
                         if (haveUpdate) {
-                            val context = requireContext()
                             MaterialAlertDialogBuilder(context)
                                 .setTitle(R.string.update_dialog_title)
                                 .setMessage(

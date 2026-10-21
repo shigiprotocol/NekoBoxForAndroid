@@ -135,6 +135,10 @@ fun Project.setupAppCommon() {
             if (key != null) {
                 getByName("release").signingConfig = key
                 getByName("debug").signingConfig = key
+            } else {
+                // ShigiProtocol: without signing secrets, sign release with the debug key
+                // so the APK built by GitHub Actions is still installable.
+                getByName("release").signingConfig = signingConfigs.getByName("debug")
             }
         }
     }
@@ -197,10 +201,10 @@ fun Project.setupApp() {
                 outputFileName = if (isPreview) {
                     outputFileName.replace(
                         project.name,
-                        "NekoBox-" + requireMetadata().getProperty("PRE_VERSION_NAME")
+                        "ShigiProtocol-" + requireMetadata().getProperty("PRE_VERSION_NAME")
                     ).replace("-preview", "")
                 } else {
-                    outputFileName.replace(project.name, "NekoBox-$versionName")
+                    outputFileName.replace(project.name, "ShigiProtocol-$versionName")
                         .replace("-release", "")
                         .replace("-oss", "")
                 }

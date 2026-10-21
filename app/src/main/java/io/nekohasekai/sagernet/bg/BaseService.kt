@@ -140,13 +140,28 @@ class BaseService {
         }
 
         override fun urlTest(): Int {
-            if (data?.proxy?.box == null) {
+            // fix: "box" is lateinit, accessing it before init threw an
+            // exception that can't cross the binder and crashed the bg process
+            val proxy = data?.proxy
+            if (proxy == null || !proxy.isInitialized()) {
                 error("core not started")
             }
             try {
                 return Libcore.urlTest(
-                    data!!.proxy!!.box, DataStore.connectionTestURL, 3000
+                    proxy.box, DataStore.connectionTestURL, 3000
                 )
+            } catch (e: Exception) {
+                error(Protocols.genFriendlyMsg(e.readableMessage))
+            }
+        }
+
+        // ShigiProtocol: returns "IP|CC" of the current exit node
+        override fun queryExitInfo(): String {
+            val proxy = data?.proxy
+            if (proxy == null || !proxy.isInitialized()) error("core not started")
+            val box = proxy.box
+            try {
+                return Libcore.getExitInfo(box, 5000)
             } catch (e: Exception) {
                 error(Protocols.genFriendlyMsg(e.readableMessage))
             }
