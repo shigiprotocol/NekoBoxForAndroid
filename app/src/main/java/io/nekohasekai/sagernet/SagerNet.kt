@@ -57,6 +57,8 @@ class SagerNet : Application(),
         Thread.setDefaultUncaughtExceptionHandler(CrashHandler)
 
         if (isMainProcess || isBgProcess) {
+            // ShigiProtocol: replace the old upstream DNS defaults (if unchanged)
+            DataStore.migrateDnsDefaults()
             externalAssets.mkdirs()
             Seq.setContext(this)
             Libcore.initCore(

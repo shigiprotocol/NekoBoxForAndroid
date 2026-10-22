@@ -113,8 +113,25 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var globalCustomConfig by configurationStore.string(Key.GLOBAL_CUSTOM_CONFIG) { "" }
 
-    var remoteDns by configurationStore.string(Key.REMOTE_DNS) { "https://dns.google/dns-query" }
-    var directDns by configurationStore.string(Key.DIRECT_DNS) { "https://223.5.5.5/dns-query" }
+    var remoteDns by configurationStore.string(Key.REMOTE_DNS) { DEFAULT_REMOTE_DNS }
+    var directDns by configurationStore.string(Key.DIRECT_DNS) { DEFAULT_DIRECT_DNS }
+
+    // ShigiProtocol DNS defaults:
+    // - remote: Google DoH by IP, sent through the tunnel (no bootstrap lookup needed)
+    // - direct: Cloudflare over plain UDP; works on every network in Iran
+    //   (foreign DoH is often throttled or blocked when used without the tunnel)
+    const val DEFAULT_REMOTE_DNS = "https://8.8.8.8/dns-query"
+    const val DEFAULT_DIRECT_DNS = "udp://1.1.1.1"
+
+    // Users that never changed DNS still have the old upstream defaults stored;
+    // move them to the new defaults. Custom values are left untouched.
+    fun migrateDnsDefaults() {
+        try {
+            if (remoteDns.trim() == "https://dns.google/dns-query") remoteDns = DEFAULT_REMOTE_DNS
+            if (directDns.trim() == "https://223.5.5.5/dns-query") directDns = DEFAULT_DIRECT_DNS
+        } catch (_: Exception) {
+        }
+    }
     var enableDnsRouting by configurationStore.boolean(Key.ENABLE_DNS_ROUTING) { true }
     var enableFakeDns by configurationStore.boolean(Key.ENABLE_FAKEDNS) { true }
 

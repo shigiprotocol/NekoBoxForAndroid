@@ -1,6 +1,7 @@
 package io.nekohasekai.sagernet.bg
 
 import android.graphics.drawable.Icon
+import android.os.Build
 import android.service.quicksettings.Tile
 import androidx.annotation.RequiresApi
 import io.nekohasekai.sagernet.R
@@ -11,11 +12,12 @@ import android.service.quicksettings.TileService as BaseTileService
 
 @RequiresApi(24)
 class TileService : BaseTileService(), SagerConnection.Callback {
-    private val iconIdle by lazy { Icon.createWithResource(this, R.drawable.ic_service_idle) }
-    private val iconBusy by lazy { Icon.createWithResource(this, R.drawable.ic_service_busy) }
-    private val iconConnected by lazy {
-        Icon.createWithResource(this, R.drawable.ic_service_active)
-    }
+    // ShigiProtocol: always show the "SH" logo; the system greys it out when
+    // the tile is inactive, so the state stays visible
+    private val iconShigi by lazy { Icon.createWithResource(this, R.drawable.ic_tile_shigi) }
+    private val iconIdle get() = iconShigi
+    private val iconBusy get() = iconShigi
+    private val iconConnected get() = iconShigi
     private var tapPending = false
 
     private val connection = SagerConnection(SagerConnection.CONNECTION_ID_TILE)
@@ -51,9 +53,8 @@ class TileService : BaseTileService(), SagerConnection.Callback {
 
     private fun updateTile(serviceState: BaseService.State, profileName: String?) {
         qsTile?.apply {
-            label = null
+            var subtitleText: String? = null
             when (serviceState) {
-                BaseService.State.Idle -> error("serviceState")
                 BaseService.State.Connecting -> {
                     icon = iconBusy
                     state = Tile.STATE_ACTIVE
@@ -61,7 +62,7 @@ class TileService : BaseTileService(), SagerConnection.Callback {
 
                 BaseService.State.Connected -> {
                     icon = iconConnected
-                    label = profileName
+                    subtitleText = profileName
                     state = Tile.STATE_ACTIVE
                 }
 
@@ -70,12 +71,16 @@ class TileService : BaseTileService(), SagerConnection.Callback {
                     state = Tile.STATE_UNAVAILABLE
                 }
 
-                BaseService.State.Stopped -> {
+                // fix: Idle used to throw and crash the background process
+                BaseService.State.Idle, BaseService.State.Stopped -> {
                     icon = iconIdle
                     state = Tile.STATE_INACTIVE
                 }
             }
-            label = label ?: getString(R.string.app_name)
+            // the tile is always named "ShigiProtocol"; the server name goes
+            // to the subtitle (Android 10+)
+            label = getString(R.string.app_name)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) subtitle = subtitleText
             updateTile()
         }
     }
