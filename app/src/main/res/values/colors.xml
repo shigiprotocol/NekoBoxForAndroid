@@ -25,6 +25,8 @@
         <item>@color/material_grey_500</item>
         <item>@color/material_blue_grey_500</item>
         <item>@color/material_light_black</item>
+        <!-- 22: RSH gray theme -->
+        <item>@color/rsh_gray</item>
     </integer-array>
 
     <color name="material_amber_100">#FFECB3</color>
@@ -283,13 +285,18 @@
 
     <color name="fab_color_progress">@color/material_light_black</color>
 
-    <!-- ShigiProtocol: default theme slot now uses the logo colors -->
-    <color name="color_pink_ssr">#FF8C00</color>
-    <color name="shigi_orange">#FF8C00</color>
-    <color name="shigi_orange_light">#FFB74D</color>
-    <color name="shigi_gray">#555555</color>
-    <color name="shigi_gray_dark">#3D3D3D</color>
-    <color name="shigi_gray_light">#6E6E6E</color>
+    <!-- RSH: the default theme slot uses the logo colors (navy + orange) -->
+    <color name="color_pink_ssr">#1B2F4E</color>
+    <color name="rsh_orange">#FF8C00</color>
+    <color name="rsh_orange_light">#FFB74D</color>
+    <!-- RSH navy theme (default) -->
+    <color name="rsh_navy">#1B2F4E</color>
+    <color name="rsh_navy_dark">#111F38</color>
+    <color name="rsh_navy_light">#2A4468</color>
+    <!-- RSH gray theme (the previous gray + orange look) -->
+    <color name="rsh_gray">#555555</color>
+    <color name="rsh_gray_dark">#3D3D3D</color>
+    <color name="rsh_gray_light">#6E6E6E</color>
 
     <color name="color_ng_black_accent">#9E9E9E</color>
     <color name="color_ng_black_primary">#2B2B2B</color>

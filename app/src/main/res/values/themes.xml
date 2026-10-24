@@ -133,15 +133,27 @@
     </style>
 
     <style name="Theme.SagerNet.Pink_SSR">
-        <!-- ShigiProtocol theme: gray bars + orange accents, like the logo -->
-        <item name="colorPrimary">@color/shigi_gray</item>
-        <item name="colorPrimaryDark">@color/shigi_gray_dark</item>
-        <item name="colorAccent">@color/shigi_orange</item>
-        <item name="colorMaterial100">@color/shigi_orange_light</item>
-        <item name="colorMaterial300">@color/shigi_gray_light</item>
-        <item name="fabColorBackground">@color/shigi_orange</item>
-        <item name="primaryOrTextPrimary">@color/shigi_orange</item>
-        <item name="primaryOrTextSecondary">@color/shigi_orange</item>
+        <!-- RSH theme: navy bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/rsh_navy</item>
+        <item name="colorPrimaryDark">@color/rsh_navy_dark</item>
+        <item name="colorAccent">@color/rsh_orange</item>
+        <item name="colorMaterial100">@color/rsh_orange_light</item>
+        <item name="colorMaterial300">@color/rsh_navy_light</item>
+        <item name="fabColorBackground">@color/rsh_orange</item>
+        <item name="primaryOrTextPrimary">@color/rsh_orange</item>
+        <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+    </style>
+
+    <style name="Theme.SagerNet.RSH_Gray">
+        <!-- RSH theme: gray bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/rsh_gray</item>
+        <item name="colorPrimaryDark">@color/rsh_gray_dark</item>
+        <item name="colorAccent">@color/rsh_orange</item>
+        <item name="colorMaterial100">@color/rsh_orange_light</item>
+        <item name="colorMaterial300">@color/rsh_gray_light</item>
+        <item name="fabColorBackground">@color/rsh_orange</item>
+        <item name="primaryOrTextPrimary">@color/rsh_orange</item>
+        <item name="primaryOrTextSecondary">@color/rsh_orange</item>
     </style>
 
     <style name="Theme.SagerNet.Amber">
@@ -418,15 +430,27 @@
     </style>
 
     <style name="Theme.SagerNet.Dialog.Pink_SSR">
-        <!-- ShigiProtocol theme: gray bars + orange accents, like the logo -->
-        <item name="colorPrimary">@color/shigi_gray</item>
-        <item name="colorPrimaryDark">@color/shigi_gray_dark</item>
-        <item name="colorAccent">@color/shigi_orange</item>
-        <item name="colorMaterial100">@color/shigi_orange_light</item>
-        <item name="colorMaterial300">@color/shigi_gray_light</item>
-        <item name="fabColorBackground">@color/shigi_orange</item>
-        <item name="primaryOrTextPrimary">@color/shigi_orange</item>
-        <item name="primaryOrTextSecondary">@color/shigi_orange</item>
+        <!-- RSH theme: navy bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/rsh_navy</item>
+        <item name="colorPrimaryDark">@color/rsh_navy_dark</item>
+        <item name="colorAccent">@color/rsh_orange</item>
+        <item name="colorMaterial100">@color/rsh_orange_light</item>
+        <item name="colorMaterial300">@color/rsh_navy_light</item>
+        <item name="fabColorBackground">@color/rsh_orange</item>
+        <item name="primaryOrTextPrimary">@color/rsh_orange</item>
+        <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+    </style>
+
+    <style name="Theme.SagerNet.Dialog.RSH_Gray">
+        <!-- RSH theme: gray bars + orange accents, like the logo -->
+        <item name="colorPrimary">@color/rsh_gray</item>
+        <item name="colorPrimaryDark">@color/rsh_gray_dark</item>
+        <item name="colorAccent">@color/rsh_orange</item>
+        <item name="colorMaterial100">@color/rsh_orange_light</item>
+        <item name="colorMaterial300">@color/rsh_gray_light</item>
+        <item name="fabColorBackground">@color/rsh_orange</item>
+        <item name="primaryOrTextPrimary">@color/rsh_orange</item>
+        <item name="primaryOrTextSecondary">@color/rsh_orange</item>
     </style>
 
     <style name="Theme.SagerNet.Dialog.Teal">

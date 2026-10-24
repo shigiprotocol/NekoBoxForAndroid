@@ -1,4 +1,4 @@
-name: ShigiProtocol Build
+name: RSH Build
 on:
   workflow_dispatch:
   push:
@@ -67,7 +67,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
-          key: shigi-debug-keystore
+          key: shigi-debug-keystore  # keep this name: a new key would change the APK signature and block updates
       - name: Setup signing key
         env:
           SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
@@ -107,5 +107,5 @@ jobs:
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: ShigiProtocol-APKs
+          name: RSH-APKs
           path: ${{ env.APK }}

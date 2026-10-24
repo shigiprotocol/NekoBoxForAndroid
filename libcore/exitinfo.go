@@ -1,6 +1,6 @@
 package libcore
 
-// ShigiProtocol: query the public exit IP and country of the active outbound.
+// RSH: query the public exit IP and country of the active outbound.
 
 import (
 	"context"

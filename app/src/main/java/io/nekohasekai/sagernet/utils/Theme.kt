@@ -31,6 +31,11 @@ object Theme {
     const val BLUE_GREY = 20
     const val BLACK = 21
 
+    // RSH: slot 2 (PINK_SSR, the default) is the navy + orange theme,
+    // RSH_GRAY keeps the previous gray + orange look
+    const val RSH_GRAY = 22
+    const val RSH_NAVY = PINK_SSR
+
     private fun defaultTheme() = PINK_SSR
 
     fun apply(context: Context) {
@@ -72,6 +77,7 @@ object Theme {
             GREY -> R.style.Theme_SagerNet_Grey
             BLUE_GREY -> R.style.Theme_SagerNet_BlueGrey
             BLACK -> R.style.Theme_SagerNet_Black
+            RSH_GRAY -> R.style.Theme_SagerNet_RSH_Gray
             else -> getTheme(defaultTheme())
         }
     }
@@ -99,6 +105,7 @@ object Theme {
             GREY -> R.style.Theme_SagerNet_Dialog_Grey
             BLUE_GREY -> R.style.Theme_SagerNet_Dialog_BlueGrey
             BLACK -> R.style.Theme_SagerNet_Dialog_Black
+            RSH_GRAY -> R.style.Theme_SagerNet_Dialog_RSH_Gray
             else -> getDialogTheme(defaultTheme())
         }
     }

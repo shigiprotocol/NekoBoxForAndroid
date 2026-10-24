@@ -20,6 +20,7 @@ import androidx.preference.PreferenceViewHolder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.getColorAttr
+import io.nekohasekai.sagernet.utils.Theme
 import kotlin.math.roundToInt
 
 class ColorPickerPreference
@@ -67,6 +68,12 @@ class ColorPickerPreference
         }
     }
 
+    private fun rshThemeDot(themeId: Int): Int? = when (themeId) {
+        Theme.RSH_NAVY -> R.drawable.ic_theme_rsh_navy
+        Theme.RSH_GRAY -> R.drawable.ic_theme_rsh_gray
+        else -> null
+    }
+
     fun getNekoAtColor(res: Resources, color: Int): Drawable {
         val neko = ResourcesCompat.getDrawable(
             res,
@@ -93,6 +100,8 @@ class ColorPickerPreference
 
                 val themeId = i
                 val view = getNekoImageViewAtColor(color, 64, 0).apply {
+                    // RSH themes: two-tone dot (navy / gray with orange)
+                    rshThemeDot(themeId)?.let { setImageResource(it) }
                     setOnClickListener {
                         persistInt(themeId)
                         dialog.dismiss()

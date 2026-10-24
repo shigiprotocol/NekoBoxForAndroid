@@ -297,7 +297,7 @@
             android:name="io.nekohasekai.sagernet.bg.TileService"
             android:exported="true"
             android:foregroundServiceType="systemExempted"
-            android:icon="@drawable/ic_tile_shigi"
+            android:icon="@drawable/ic_tile_rsh"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
             android:process=":bg"

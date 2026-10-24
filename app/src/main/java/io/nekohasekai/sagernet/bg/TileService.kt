@@ -12,12 +12,12 @@ import android.service.quicksettings.TileService as BaseTileService
 
 @RequiresApi(24)
 class TileService : BaseTileService(), SagerConnection.Callback {
-    // ShigiProtocol: always show the "SH" logo; the system greys it out when
+    // RSH: always show the "RS" logo; the system greys it out when
     // the tile is inactive, so the state stays visible
-    private val iconShigi by lazy { Icon.createWithResource(this, R.drawable.ic_tile_shigi) }
-    private val iconIdle get() = iconShigi
-    private val iconBusy get() = iconShigi
-    private val iconConnected get() = iconShigi
+    private val iconRsh by lazy { Icon.createWithResource(this, R.drawable.ic_tile_rsh) }
+    private val iconIdle get() = iconRsh
+    private val iconBusy get() = iconRsh
+    private val iconConnected get() = iconRsh
     private var tapPending = false
 
     private val connection = SagerConnection(SagerConnection.CONNECTION_ID_TILE)
@@ -77,7 +77,7 @@ class TileService : BaseTileService(), SagerConnection.Callback {
                     state = Tile.STATE_INACTIVE
                 }
             }
-            // the tile is always named "ShigiProtocol"; the server name goes
+            // the tile is always named "RSH"; the server name goes
             // to the subtitle (Android 10+)
             label = getString(R.string.app_name)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) subtitle = subtitleText

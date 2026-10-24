@@ -18,6 +18,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.ui.MainActivity
 import kotlinx.coroutines.Dispatchers
@@ -84,7 +85,7 @@ class StatsBar @JvmOverloads constructor(
         TooltipCompat.setTooltipText(this, text)
     }
 
-    // ShigiProtocol: avoid overlapping tests and drop results from an old session
+    // RSH: avoid overlapping tests and drop results from an old session
     @Volatile
     private var testing = false
     private var session = 0
@@ -126,7 +127,10 @@ class StatsBar @JvmOverloads constructor(
     }
 
     private val activeColor = Color.parseColor("#FF8C00") // orange, same as the app icon
-    private val idleColor = Color.parseColor("#9E9E9E")
+    // idle arrow: muted gray in the RSH gray theme, muted navy otherwise
+    private val idleColor = Color.parseColor(
+        if (DataStore.appTheme == Theme.RSH_GRAY) "#9E9E9E" else "#8E9DB8"
+    )
 
     private fun speedLine(arrow: String, rate: Long, total: Long): CharSequence {
         val sb = SpannableStringBuilder()
@@ -185,9 +189,9 @@ class StatsBar @JvmOverloads constructor(
                     }
                 }
                 if (elapsed < 0) throw lastError ?: IllegalStateException("test failed")
-                val pingText = app.getString(R.string.shigi_ping, elapsed)
+                val pingText = app.getString(R.string.rsh_ping, elapsed)
                 onMainDispatcher {
-                    if (mySession == session) setStatus(pingText + "   •   " + app.getString(R.string.shigi_getting_ip))
+                    if (mySession == session) setStatus(pingText + "   •   " + app.getString(R.string.rsh_getting_ip))
                 }
                 // exit IP & country, through the active outbound
                 val info = try {

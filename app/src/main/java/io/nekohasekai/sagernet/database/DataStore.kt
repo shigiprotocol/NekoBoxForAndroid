@@ -116,7 +116,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var remoteDns by configurationStore.string(Key.REMOTE_DNS) { DEFAULT_REMOTE_DNS }
     var directDns by configurationStore.string(Key.DIRECT_DNS) { DEFAULT_DIRECT_DNS }
 
-    // ShigiProtocol DNS defaults:
+    // RSH DNS defaults:
     // - remote: Google DoH by IP, sent through the tunnel (no bootstrap lookup needed)
     // - direct: Cloudflare over plain UDP; works on every network in Iran
     //   (foreign DoH is often throttled or blocked when used without the tunnel)

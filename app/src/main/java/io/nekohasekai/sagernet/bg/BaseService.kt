@@ -155,7 +155,7 @@ class BaseService {
             }
         }
 
-        // ShigiProtocol: returns "IP|CC" of the current exit node
+        // RSH: returns "IP|CC" of the current exit node
         override fun queryExitInfo(): String {
             val proxy = data?.proxy
             if (proxy == null || !proxy.isInitialized()) error("core not started")
