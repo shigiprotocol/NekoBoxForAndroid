@@ -2,4 +2,11 @@
 <resources>
     <color name="fab_color_progress">@color/material_light_white</color>
     <color name="preference_simple_menu_background">#303030</color>
+    <!-- RSH dark mode: pure (OLED) black background; drawer, cards, dialogs and
+         menus in the theme color (navy, or gray for the gray theme) -->
+    <color name="rsh_window_bg">#000000</color>
+    <color name="rsh_navy_surface">#111F38</color>
+    <color name="rsh_gray_surface">#2A2A2A</color>
+    <color name="rsh_navy_menu">#1B2F4E</color>
+    <color name="rsh_gray_menu">#303030</color>
 </resources>

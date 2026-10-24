@@ -10,4 +10,7 @@
     <attr name="fabColorBackground" format="color" />
     <attr name="selectedColorPrimary" format="color" />
     <attr name="whiteOrTextPrimary" format="color" />
+    <!-- RSH: background of the side drawer and of the settings drop-down menus -->
+    <attr name="rshDrawerBackground" format="color|reference" />
+    <attr name="rshMenuBackground" format="color|reference" />
 </resources>

@@ -1,6 +1,9 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.SagerNet" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- defaults = the previous look (RSH themes override them) -->
+        <item name="rshDrawerBackground">?android:attr/windowBackground</item>
+        <item name="rshMenuBackground">@color/preference_simple_menu_background</item>
         <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Solid</item>
         <item name="actionModeCloseDrawable">@drawable/ic_navigation_close</item>
         <item name="colorButtonNormal">?colorAccent</item>
@@ -49,6 +52,9 @@
     </style>
 
     <style name="Theme.SagerNet.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <!-- defaults = the previous look (RSH themes override them) -->
+        <item name="rshDrawerBackground">?android:attr/windowBackground</item>
+        <item name="rshMenuBackground">@color/preference_simple_menu_background</item>
         <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Solid</item>
         <item name="actionModeCloseDrawable">@drawable/ic_navigation_close</item>
         <item name="colorButtonNormal">?colorAccent</item>
@@ -142,6 +148,12 @@
         <item name="fabColorBackground">@color/rsh_orange</item>
         <item name="primaryOrTextPrimary">@color/rsh_orange</item>
         <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+        <!-- dark mode: OLED black background, theme-colored drawer / cards / dialogs -->
+        <item name="android:colorBackground">@color/rsh_window_bg</item>
+        <item name="colorSurface">@color/rsh_navy_surface</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="rshDrawerBackground">@color/rsh_navy_surface</item>
+        <item name="rshMenuBackground">@color/rsh_navy_menu</item>
     </style>
 
     <style name="Theme.SagerNet.RSH_Gray">
@@ -154,6 +166,12 @@
         <item name="fabColorBackground">@color/rsh_orange</item>
         <item name="primaryOrTextPrimary">@color/rsh_orange</item>
         <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+        <!-- dark mode: OLED black background, theme-colored drawer / cards / dialogs -->
+        <item name="android:colorBackground">@color/rsh_window_bg</item>
+        <item name="colorSurface">@color/rsh_gray_surface</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="rshDrawerBackground">@color/rsh_gray_surface</item>
+        <item name="rshMenuBackground">@color/rsh_gray_menu</item>
     </style>
 
     <style name="Theme.SagerNet.Amber">
@@ -439,6 +457,10 @@
         <item name="fabColorBackground">@color/rsh_orange</item>
         <item name="primaryOrTextPrimary">@color/rsh_orange</item>
         <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+        <!-- dark mode: theme-colored dialogs and menus -->
+        <item name="colorSurface">@color/rsh_navy_surface</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="rshMenuBackground">@color/rsh_navy_menu</item>
     </style>
 
     <style name="Theme.SagerNet.Dialog.RSH_Gray">
@@ -451,6 +473,10 @@
         <item name="fabColorBackground">@color/rsh_orange</item>
         <item name="primaryOrTextPrimary">@color/rsh_orange</item>
         <item name="primaryOrTextSecondary">@color/rsh_orange</item>
+        <!-- dark mode: theme-colored dialogs and menus -->
+        <item name="colorSurface">@color/rsh_gray_surface</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="rshMenuBackground">@color/rsh_gray_menu</item>
     </style>
 
     <style name="Theme.SagerNet.Dialog.Teal">

@@ -297,6 +297,12 @@
     <color name="rsh_gray">#555555</color>
     <color name="rsh_gray_dark">#3D3D3D</color>
     <color name="rsh_gray_light">#6E6E6E</color>
+    <!-- RSH backgrounds / surfaces (light mode: Material defaults; dark mode in values-night) -->
+    <color name="rsh_window_bg">#FFFFFF</color>
+    <color name="rsh_navy_surface">#FFFFFF</color>
+    <color name="rsh_gray_surface">#FFFFFF</color>
+    <color name="rsh_navy_menu">#FAFAFA</color>
+    <color name="rsh_gray_menu">#FAFAFA</color>
 
     <color name="color_ng_black_accent">#9E9E9E</color>
     <color name="color_ng_black_primary">#2B2B2B</color>

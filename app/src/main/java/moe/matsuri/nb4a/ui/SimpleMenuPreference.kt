@@ -73,12 +73,13 @@ open class SimpleMenuPreference
             if (position == currentPosition) {
                 view.setBackgroundColor(context.getColorAttr(R.attr.colorMaterial100))
             } else {
-                view.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.preference_simple_menu_background
-                    )
-                )
+                // RSH: follows the theme (navy / gray); falls back to the old color
+                val bg = try {
+                    context.getColorAttr(R.attr.rshMenuBackground)
+                } catch (_: Exception) {
+                    ContextCompat.getColor(context, R.color.preference_simple_menu_background)
+                }
+                view.setBackgroundColor(bg)
             }
             return view
         }
