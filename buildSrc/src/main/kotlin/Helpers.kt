@@ -201,10 +201,10 @@ fun Project.setupApp() {
                 outputFileName = if (isPreview) {
                     outputFileName.replace(
                         project.name,
-                        "RSH-" + requireMetadata().getProperty("PRE_VERSION_NAME")
+                        "STRIDER-" + requireMetadata().getProperty("PRE_VERSION_NAME")
                     ).replace("-preview", "")
                 } else {
-                    outputFileName.replace(project.name, "RSH-$versionName")
+                    outputFileName.replace(project.name, "STRIDER-$versionName")
                         .replace("-release", "")
                         .replace("-oss", "")
                 }

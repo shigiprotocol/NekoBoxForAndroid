@@ -84,7 +84,7 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                 )
                 onMainDispatcher {
                     startFilesForResult(
-                        exportSettings, "rsh_backup_${Date().toLocaleString()}.json"
+                        exportSettings, "strider_backup_${Date().toLocaleString()}.json"
                     )
                 }
             }
@@ -99,7 +99,7 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                 )
                 app.cacheDir.mkdirs()
                 val cacheFile = File(
-                    app.cacheDir, "rsh_backup_${Date().toLocaleString()}.json"
+                    app.cacheDir, "strider_backup_${Date().toLocaleString()}.json"
                 )
                 cacheFile.writeText(content)
                 onMainDispatcher {
