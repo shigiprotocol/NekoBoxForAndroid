@@ -113,6 +113,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var globalCustomConfig by configurationStore.string(Key.GLOBAL_CUSTOM_CONFIG) { "" }
 
+    // STRIDER: random device ID, only used when the system gives no ANDROID_ID
+    var hwidFallback by configurationStore.string("hwidFallback") { "" }
+
     var remoteDns by configurationStore.string(Key.REMOTE_DNS) { DEFAULT_REMOTE_DNS }
     var directDns by configurationStore.string(Key.DIRECT_DNS) { DEFAULT_DIRECT_DNS }
 

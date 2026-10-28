@@ -351,6 +351,14 @@ type httpResponse struct {
 }
 
 func (h *httpResponse) errorString() string {
+	// STRIDER: panels with an HWID device limit (3x-ui, Remnawave) answer 404
+	// and say why in these headers
+	if h.Header.Get("X-Hwid-Max-Devices-Reached") == "true" {
+		return fmt.Sprint("HTTP ", h.Status, ": device limit reached, this subscription is already used on the maximum number of devices (HWID)")
+	}
+	if h.Header.Get("X-Hwid-Not-Supported") == "true" {
+		return fmt.Sprint("HTTP ", h.Status, ": this subscription needs a device ID (HWID)")
+	}
 	content, err := h.getContentString()
 	if err != nil {
 		return fmt.Sprint("HTTP ", h.Status)
