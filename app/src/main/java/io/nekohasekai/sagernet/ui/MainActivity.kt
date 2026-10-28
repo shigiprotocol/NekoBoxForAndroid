@@ -219,9 +219,9 @@ class MainActivity : ThemedActivity(),
     }
 
     // STRIDER: strider://lock link -> locked subscription (URL and servers never shown)
-    private suspend fun importLockedSubscription(link: String) {
+    private suspend fun importLockedSubscription(lockedLink: String) {
         val sub = try {
-            io.nekohasekai.sagernet.group.LockedSubs.decode(link)
+            io.nekohasekai.sagernet.group.LockedSubs.decode(lockedLink)
         } catch (e: Exception) {
             onMainDispatcher { alert(e.readableMessage).show() }
             return
@@ -235,7 +235,7 @@ class MainActivity : ThemedActivity(),
             return
         }
         val group = ProxyGroup(type = GroupType.SUBSCRIPTION).apply {
-            subscription = SubscriptionBean().apply { link = sub.url }
+            subscription = SubscriptionBean().also { it.link = sub.url }
             name = sub.name.takeIf { it.isNotBlank() } ?: ("Subscription #" + System.currentTimeMillis())
         }
         onMainDispatcher {
