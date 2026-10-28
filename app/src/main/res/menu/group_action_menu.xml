@@ -25,6 +25,9 @@
         </menu>
     </item>
     <item
+        android:id="@+id/action_create_locked_link"
+        android:title="@string/strider_create_locked_link" />
+    <item
         android:id="@+id/action_clear"
         android:title="@string/clear_profiles" />
 </menu>

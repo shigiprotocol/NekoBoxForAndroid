@@ -1557,6 +1557,9 @@ class ConfigurationFragment @JvmOverloads constructor(
                 if (proxyEntity.requireBean().name.isBlank() || !pf.alwaysShowAddress) {
                     address = ""
                 }
+                // STRIDER: servers of a locked subscription are never shown or shared
+                val locked = io.nekohasekai.sagernet.group.LockedSubs.isLocked(proxyGroup)
+                if (locked) address = ""
 
                 profileAddress.text = address
                 (trafficText.parent as View).isGone =
@@ -1608,8 +1611,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                 }
 
                 val selectOrChain = select || proxyEntity.type == ProxyEntity.TYPE_CHAIN
-                shareLayout.isGone = selectOrChain
-                editButton.isGone = select
+                shareLayout.isGone = selectOrChain || locked
+                editButton.isGone = select || locked
                 removeButton.isGone = select
 
                 proxyEntity.nekoBean?.apply {
@@ -1652,7 +1655,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         popup.show()
                     }
 
-                    if (!(select || proxyEntity.type == ProxyEntity.TYPE_CHAIN)) {
+                    if (!(select || proxyEntity.type == ProxyEntity.TYPE_CHAIN || locked)) {
                         onMainDispatcher {
                             shareLayer.setBackgroundColor(Color.TRANSPARENT)
                             shareButton.setImageResource(R.drawable.ic_social_share)

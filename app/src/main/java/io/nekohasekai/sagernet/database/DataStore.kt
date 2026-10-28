@@ -116,6 +116,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     // STRIDER: random device ID, only used when the system gives no ANDROID_ID
     var hwidFallback by configurationStore.string("hwidFallback") { "" }
 
+    // STRIDER: hashes of locked subscription URLs (strider://lock links)
+    var lockedSubscriptions by configurationStore.string("lockedSubscriptions") { "" }
+
     var remoteDns by configurationStore.string(Key.REMOTE_DNS) { DEFAULT_REMOTE_DNS }
     var directDns by configurationStore.string(Key.DIRECT_DNS) { DEFAULT_DIRECT_DNS }
 

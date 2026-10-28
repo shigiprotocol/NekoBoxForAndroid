@@ -1,0 +1,42 @@
+name: STRIDER sub guard
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - "tools/subguard/**"
+      - ".github/workflows/subguard.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Test
+        working-directory: tools/subguard
+        run: go vet ./... && go test -count=1 ./...
+      - name: Build
+        working-directory: tools/subguard
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          mkdir -p dist
+          for arch in amd64 arm64; do
+            GOOS=linux GOARCH=$arch go build -trimpath -ldflags "-s -w" -o dist/strider-subguard-linux-$arch .
+          done
+          sha256sum dist/* | tee dist/SHA256SUMS
+      - name: Publish release "subguard"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! gh release view subguard >/dev/null 2>&1; then
+            gh release create subguard --target "$GITHUB_SHA" --title "STRIDER sub guard" \
+              --notes "Install on the 3x-ui server: see tools/subguard/install.sh"
+          fi
+          gh release upload subguard tools/subguard/dist/* --clobber

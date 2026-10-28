@@ -361,6 +361,19 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
                 }
 
+                R.id.action_create_locked_link -> {
+                    // STRIDER (admins): turn this subscription into a strider://lock link
+                    try {
+                        val link = io.nekohasekai.sagernet.group.LockedSubs.encode(
+                            proxyGroup.subscription!!.link, proxyGroup.displayName()
+                        )
+                        SagerNet.trySetPrimaryClip(link)
+                        snackbar(getString(R.string.strider_locked_link_copied)).show()
+                    } catch (e: Exception) {
+                        snackbar(e.readableMessage).show()
+                    }
+                }
+
                 R.id.action_clear -> {
                     MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
                         .setMessage(R.string.clear_profiles_message)
@@ -383,7 +396,9 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
             itemView.setOnClickListener { }
 
-            editButton.isGone = proxyGroup.ungrouped
+            // STRIDER: a locked subscription's settings page would show its URL
+            val locked = io.nekohasekai.sagernet.group.LockedSubs.isLocked(proxyGroup)
+            editButton.isGone = proxyGroup.ungrouped || locked
             updateButton.isInvisible = proxyGroup.type != GroupType.SUBSCRIPTION
             groupName.text = proxyGroup.displayName()
 
@@ -405,6 +420,16 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
                 if (proxyGroup.type != GroupType.SUBSCRIPTION) {
                     popup.menu.removeItem(R.id.action_share_subscription)
+                }
+                // STRIDER: nothing of a locked subscription can be shared or exported
+                if (io.nekohasekai.sagernet.group.LockedSubs.isLocked(proxyGroup)) {
+                    popup.menu.removeItem(R.id.action_share_subscription)
+                    popup.menu.removeItem(R.id.action_export)
+                }
+                if (proxyGroup.type != GroupType.SUBSCRIPTION || !io.nekohasekai.sagernet.group.LockedSubs.enabled ||
+                    io.nekohasekai.sagernet.group.LockedSubs.isLocked(proxyGroup)
+                ) {
+                    popup.menu.removeItem(R.id.action_create_locked_link)
                 }
                 popup.setOnMenuItemClickListener(this)
                 popup.show()
@@ -436,7 +461,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
                 subscriptionUpdateProgress.isVisible = false
                 updateButton.isInvisible = proxyGroup.type != GroupType.SUBSCRIPTION
-                editButton.isGone = proxyGroup.ungrouped
+                editButton.isGone = proxyGroup.ungrouped || locked
             }
 
             val subscription = proxyGroup.subscription

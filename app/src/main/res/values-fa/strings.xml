@@ -532,5 +532,7 @@
     <string name="network_change_reset_connections">بازنشانی اتصال خروجی، هنگام تغییر شبکه</string>
     <string name="wake_reset_connections">بازنشانی اتصال خروجی، هنگام روشن‌شدن صفحه موبایل</string>
     <string name="rsh_ping">پینگ %d ms</string>
+    <string name="strider_create_locked_link">ساخت لینک قفل‌شده</string>
+    <string name="strider_locked_link_copied">لینک قفل‌شده کپی شد. آن را به کاربر بدهید: STRIDER بازش می‌کند ولی لینک ساب و کانفیگ‌ها را هرگز نشان نمی‌دهد.</string>
     <string name="rsh_getting_ip">دریافت IP…</string>
 </resources>

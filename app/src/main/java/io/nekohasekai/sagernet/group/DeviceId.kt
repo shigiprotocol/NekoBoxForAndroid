@@ -64,6 +64,10 @@ object DeviceId {
             request.setHeader("X-Device-OS", "Android")
             request.setHeader("X-Ver-OS", Build.VERSION.RELEASE.orEmpty())
             request.setHeader("X-Device-Model", deviceModel)
+            // proof for the sub guard that this request comes from STRIDER
+            LockedSubs.authTag(hwid).takeIf { it.isNotEmpty() }?.let {
+                request.setHeader("X-Strider-Auth", it)
+            }
         } catch (_: Exception) {
             // never let device info break a subscription update
         }

@@ -154,6 +154,11 @@ fun Project.setupApp() {
             versionCode = verCode
             versionName = verName
             buildConfigField("String", "PRE_VERSION_NAME", "\"\"")
+            // STRIDER: key for locked subscriptions (GitHub secret STRIDER_LOCK_KEY);
+            // only base64-like values are accepted, anything else disables the feature
+            val lockKey = (System.getenv("STRIDER_LOCK_KEY") ?: "").trim()
+                .takeIf { Regex("^[A-Za-z0-9+/=_-]{16,128}$").matches(it) } ?: ""
+            buildConfigField("String", "STRIDER_LOCK_KEY", "\"$lockKey\"")
         }
     }
     setupAppCommon()

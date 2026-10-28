@@ -87,6 +87,8 @@ jobs:
       - name: Gradle Build
         env:
           BUILD_PLUGIN: none
+          # same value as in the Windows repo and the sub guard (locked subscriptions)
+          STRIDER_LOCK_KEY: ${{ secrets.STRIDER_LOCK_KEY }}
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/25.0.8775105" >> local.properties

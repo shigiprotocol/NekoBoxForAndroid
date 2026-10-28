@@ -32,6 +32,7 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.ProxyGroup
+import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeListener
 import io.nekohasekai.sagernet.databinding.LayoutMainBinding
@@ -139,7 +140,9 @@ class MainActivity : ThemedActivity(),
         val uri = intent.data ?: return
 
         runOnDefaultDispatcher {
-            if (uri.scheme == "sn" && uri.host == "subscription" || uri.scheme == "clash") {
+            if (uri.scheme == "sn" && uri.host == "subscription" || uri.scheme == "clash" ||
+                uri.scheme == "strider"
+            ) {
                 importSubscription(uri)
             } else {
                 importProfile(uri)
@@ -162,6 +165,7 @@ class MainActivity : ThemedActivity(),
     }
 
     suspend fun importSubscription(uri: Uri) {
+        if (uri.scheme == "strider") return importLockedSubscription(uri.toString())
         val group: ProxyGroup
 
         val url = uri.getQueryParameter("url")
@@ -212,6 +216,42 @@ class MainActivity : ThemedActivity(),
 
         }
 
+    }
+
+    // STRIDER: strider://lock link -> locked subscription (URL and servers never shown)
+    private suspend fun importLockedSubscription(link: String) {
+        val sub = try {
+            io.nekohasekai.sagernet.group.LockedSubs.decode(link)
+        } catch (e: Exception) {
+            onMainDispatcher { alert(e.readableMessage).show() }
+            return
+        }
+        // the same locked subscription again: just update it
+        SagerDatabase.groupDao.allGroups().firstOrNull {
+            it.type == GroupType.SUBSCRIPTION && it.subscription?.link == sub.url
+        }?.let {
+            GroupUpdater.startUpdate(it, true)
+            onMainDispatcher { displayFragmentWithId(R.id.nav_group) }
+            return
+        }
+        val group = ProxyGroup(type = GroupType.SUBSCRIPTION).apply {
+            subscription = SubscriptionBean().apply { link = sub.url }
+            name = sub.name.takeIf { it.isNotBlank() } ?: ("Subscription #" + System.currentTimeMillis())
+        }
+        onMainDispatcher {
+            displayFragmentWithId(R.id.nav_group)
+            MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.subscription_import)
+                .setMessage(getString(R.string.subscription_import_message, "🔒 " + group.name))
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    runOnDefaultDispatcher {
+                        // marked as locked before the group exists, so it is never shown unlocked
+                        io.nekohasekai.sagernet.group.LockedSubs.markLocked(sub.url)
+                        finishImportSubscription(group)
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
     }
 
     private suspend fun finishImportSubscription(subscription: ProxyGroup) {
