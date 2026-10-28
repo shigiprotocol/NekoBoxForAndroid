@@ -57,15 +57,19 @@ object DeviceId {
             return name.trim().replaceFirstChar { it.uppercase() }.ifBlank { "Android" }
         }
 
-    /** Adds X-HWID, X-Device-OS, X-Ver-OS and X-Device-Model to a request. */
-    fun applyTo(request: HTTPRequest) {
+    /**
+     * Adds X-HWID, X-Device-OS, X-Ver-OS and X-Device-Model to a request.
+     * Locked subscriptions also send the STRIDER proof for the sub guard;
+     * normal ones never do, so a plain subscription URL can't get past it.
+     */
+    fun applyTo(request: HTTPRequest, locked: Boolean = false) {
         try {
             request.setHeader("X-HWID", hwid)
             request.setHeader("X-Device-OS", "Android")
             request.setHeader("X-Ver-OS", Build.VERSION.RELEASE.orEmpty())
             request.setHeader("X-Device-Model", deviceModel)
             // proof for the sub guard that this request comes from STRIDER
-            LockedSubs.authTag(hwid).takeIf { it.isNotEmpty() }?.let {
+            if (locked) LockedSubs.authTag(hwid).takeIf { it.isNotEmpty() }?.let {
                 request.setHeader("X-Strider-Auth", it)
             }
         } catch (_: Exception) {

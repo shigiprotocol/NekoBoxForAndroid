@@ -70,7 +70,7 @@ object RawUpdater : GroupUpdater() {
                 setURL(subscription.link)
                 setUserAgent(subscription.customUserAgent.takeIf { it.isNotBlank() } ?: USER_AGENT)
                 // STRIDER: device ID for panels with an HWID device limit
-                DeviceId.applyTo(this)
+                DeviceId.applyTo(this, locked)
             }.execute() } catch (e: Exception) {
                 // STRIDER: never show the URL of a locked subscription in an error
                 if (locked) throw Exception(LockedSubs.hide(e.message, link)) else throw e
