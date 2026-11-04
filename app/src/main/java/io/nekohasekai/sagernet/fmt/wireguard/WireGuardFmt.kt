@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.fmt.wireguard
 
+import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import moe.matsuri.nb4a.SingBoxOptions
 import moe.matsuri.nb4a.utils.Util
 import moe.matsuri.nb4a.utils.listByLineOrComma
