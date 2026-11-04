@@ -734,6 +734,10 @@ object RawUpdater : GroupUpdater() {
         bean.localAddress = localAddresses.flatMap { it.split(",") }.joinToString("\n")
         bean.privateKey = iface["PrivateKey"]
         bean.mtu = iface["MTU"]?.toIntOrNull()
+        // STRIDER: Reserved (Cloudflare WARP), and the "# name" line 3x-ui writes
+        (iface["Reserved"] ?: ini["Peer"]?.get("Reserved"))?.takeIf { it.isNotBlank() }?.let { bean.reserved = it }
+        val remark = Regex("""^\s*#\s*(.+?)\s*$""", RegexOption.MULTILINE).find(conf)
+            ?.groupValues?.get(1)?.takeIf { it.isNotBlank() }
         val peers = ini.getAll("Peer")
         if (peers.isNullOrEmpty()) error("Missing 'Peer' selections")
         val beans = mutableListOf<WireGuardBean>()
@@ -744,8 +748,11 @@ object RawUpdater : GroupUpdater() {
             }
 
             val peerBean = bean.clone()
-            peerBean.serverAddress = endpoint.substringBeforeLast(":")
-            peerBean.serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: continue
+            // STRIDER: "[ipv6]:port" endpoints (the brackets broke the server address)
+            val (host, port) = io.nekohasekai.sagernet.fmt.wireguard.splitWireGuardEndpoint(endpoint) ?: continue
+            peerBean.serverAddress = host
+            peerBean.serverPort = port
+            if (remark != null) peerBean.name = remark
             peerBean.peerPublicKey = peer["PublicKey"] ?: continue
             peerBean.peerPreSharedKey = peer["PresharedKey"]
             beans.add(peerBean.applyDefaultValues())

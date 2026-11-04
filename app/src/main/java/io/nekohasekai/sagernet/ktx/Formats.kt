@@ -212,6 +212,14 @@ suspend fun parseProxies(text: String): List<AbstractBean> {
             }.onFailure {
                 Logs.w(it)
             }
+        } else if (startsWith("wireguard://") || startsWith("wg://")) {
+            // STRIDER: WireGuard share links (3x-ui, v2rayN, Hiddify...)
+            Logs.d("Try parse wireguard link: $this")
+            runCatching {
+                entities.add(io.nekohasekai.sagernet.fmt.wireguard.parseWireGuardLink(this))
+            }.onFailure {
+                Logs.w(it)
+            }
         } else if (startsWith("anytls://")) {
             Logs.d("Try parse anytls link: $this")
             runCatching {
