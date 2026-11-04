@@ -138,19 +138,15 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
         val out = JSONObject().apply {
             put("version", 1)
             if (profile) {
-                // STRIDER: locked subscriptions (and their servers) never leave the app
-                val groups = SagerDatabase.groupDao.allGroups()
-                val lockedIds = groups.filter { io.nekohasekai.sagernet.group.LockedSubs.isLocked(it) }
-                    .map { it.id }.toSet()
                 put("profiles", JSONArray().apply {
                     SagerDatabase.proxyDao.getAll().forEach {
-                        if (it.groupId !in lockedIds) put(it.toBase64Str())
+                        put(it.toBase64Str())
                     }
                 })
 
                 put("groups", JSONArray().apply {
-                    groups.forEach {
-                        if (it.id !in lockedIds) put(it.toBase64Str())
+                    SagerDatabase.groupDao.allGroups().forEach {
+                        put(it.toBase64Str())
                     }
                 })
             }

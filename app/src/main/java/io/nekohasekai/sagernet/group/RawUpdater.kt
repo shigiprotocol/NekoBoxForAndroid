@@ -56,8 +56,7 @@ object RawUpdater : GroupUpdater() {
                 ?: error(app.getString(R.string.no_proxies_found_in_subscription))
         } else {
 
-            val locked = LockedSubs.isLocked(subscription.link)
-            val response = try { Libcore.newHttpClient().apply {
+            val response = Libcore.newHttpClient().apply {
                 trySocks5(DataStore.mixedPort)
                 tryH3Direct()
                 when (DataStore.appTLSVersion) {
@@ -69,12 +68,7 @@ object RawUpdater : GroupUpdater() {
                 }
                 setURL(subscription.link)
                 setUserAgent(subscription.customUserAgent.takeIf { it.isNotBlank() } ?: USER_AGENT)
-                // STRIDER: device ID for panels with an HWID device limit
-                DeviceId.applyTo(this, locked)
-            }.execute() } catch (e: Exception) {
-                // STRIDER: never show the URL of a locked subscription in an error
-                if (locked) throw Exception(LockedSubs.hide(e.message, link)) else throw e
-            }
+            }.execute()
             proxies = parseRaw(Util.getStringBox(response.contentString))
                 ?: error(app.getString(R.string.no_proxies_found))
 
