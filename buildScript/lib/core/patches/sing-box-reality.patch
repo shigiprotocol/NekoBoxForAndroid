@@ -1,0 +1,160 @@
+diff --git a/common/tls/reality_client.go b/common/tls/reality_client.go
+index d056966..de5c1eb 100644
+--- a/common/tls/reality_client.go
++++ b/common/tls/reality_client.go
+@@ -24,6 +24,7 @@ import (
+ 	"net/http"
+ 	"reflect"
+ 	"strings"
++	"sync"
+ 	"time"
+ 	"unsafe"
+ 
+@@ -115,7 +116,13 @@ func (e *RealityClientConfig) ClientHandshake(ctx context.Context, conn net.Conn
+ 	if err != nil {
+ 		return nil, err
+ 	}
++	// STRIDER: see realityModeFor
++	modeKey := e.uClient.ServerName() + "|" + string(e.publicKey)
++	classic := realityModeFor(modeKey)
+ 	for _, extension := range uConn.Extensions {
++		if !classic {
++			break
++		}
+ 		if ce, ok := extension.(*utls.SupportedCurvesExtension); ok {
+ 			ce.Curves = common.Filter(ce.Curves, func(curveID utls.CurveID) bool {
+ 				return curveID != utls.X25519MLKEM768
+@@ -153,9 +160,12 @@ func (e *RealityClientConfig) ClientHandshake(ctx context.Context, conn net.Conn
+ 	}
+ 	binary.BigEndian.PutUint64(hello.SessionId, uint64(nowTime.Unix()))
+ 
+-	hello.SessionId[0] = 1
+-	hello.SessionId[1] = 8
+-	hello.SessionId[2] = 1
++	// STRIDER: report a current Xray version; Xray v26.7.11 - v26.9.7 servers
++	// reject clients older than 26.3.27 unless minClientVer is set
++	hello.SessionId[0] = 26
++	hello.SessionId[1] = 10
++	hello.SessionId[2] = 31
++	hello.SessionId[3] = 0
+ 	binary.BigEndian.PutUint32(hello.SessionId[4:], uint32(time.Now().Unix()))
+ 	copy(hello.SessionId[8:], e.shortID[:])
+ 	if debug.Enabled {
+@@ -170,6 +180,10 @@ func (e *RealityClientConfig) ClientHandshake(ctx context.Context, conn net.Conn
+ 		return nil, E.New("nil KeyShareKeys")
+ 	}
+ 	ecdheKey := keyShareKeys.Ecdhe
++	if ecdheKey == nil {
++		// X25519 inside X25519MLKEM768 (same as Xray)
++		ecdheKey = keyShareKeys.MlkemEcdhe
++	}
+ 	if ecdheKey == nil {
+ 		return nil, E.New("nil ecdheKey")
+ 	}
+@@ -196,6 +210,7 @@ func (e *RealityClientConfig) ClientHandshake(ctx context.Context, conn net.Conn
+ 
+ 	err = uConn.HandshakeContext(ctx)
+ 	if err != nil {
++		realityModeResult(modeKey, classic, false, false)
+ 		return nil, err
+ 	}
+ 
+@@ -204,9 +219,11 @@ func (e *RealityClientConfig) ClientHandshake(ctx context.Context, conn net.Conn
+ 	}
+ 
+ 	if !verifier.verified {
++		realityModeResult(modeKey, classic, false, true)
+ 		go realityClientFallback(e.ctx, uConn, e.uClient.ServerName(), e.uClient.id)
+ 		return nil, E.New("reality verification failed")
+ 	}
++	realityModeResult(modeKey, classic, true, false)
+ 
+ 	return &realityClientConnWrapper{uConn}, nil
+ }
+@@ -315,3 +332,68 @@ func (c *realityClientConnWrapper) ReaderReplaceable() bool {
+ func (c *realityClientConnWrapper) WriterReplaceable() bool {
+ 	return true
+ }
++
++// STRIDER: REALITY servers on Xray-core v26.9.8+ reject a ClientHello that
++// has no X25519MLKEM768 key share (it was removed here before), while REALITY
++// servers older than ML-KEM support (early 2025) fail when it is sent.
++// The new hello (same as Xray / v2rayNG) is used first; per server, the old
++// one is tried only after the new one keeps failing, and is left as soon as
++// the server rejects it. Once a hello has worked for a server, network errors
++// never make it switch.
++type realityModeState struct {
++	classic   bool
++	hybridOK  bool
++	classicOK bool
++	fails     int
++}
++
++var (
++	realityModesAccess sync.Mutex
++	realityModes       = make(map[string]*realityModeState)
++)
++
++// realityModeFor returns true when the old hello (no X25519MLKEM768) must be used.
++func realityModeFor(key string) bool {
++	realityModesAccess.Lock()
++	defer realityModesAccess.Unlock()
++	st := realityModes[key]
++	return st != nil && st.classic
++}
++
++func realityModeResult(key string, classic bool, ok bool, rejected bool) {
++	realityModesAccess.Lock()
++	defer realityModesAccess.Unlock()
++	st := realityModes[key]
++	if st == nil {
++		if ok {
++			return // new hello works: nothing to remember
++		}
++		if len(realityModes) > 4096 {
++			realityModes = make(map[string]*realityModeState)
++		}
++		st = &realityModeState{}
++		realityModes[key] = st
++	}
++	if st.classic != classic {
++		return // result of a connection started before the last switch
++	}
++	if ok {
++		if classic {
++			st.classicOK = true
++		} else {
++			st.hybridOK = true
++		}
++		st.fails = 0
++		return
++	}
++	confirmed := (classic && st.classicOK) || (!classic && st.hybridOK)
++	if confirmed && !rejected {
++		return // a network error on a hello that works for this server
++	}
++	st.fails++
++	// the old hello rejected (server needs ML-KEM): switch back at once
++	if (classic && rejected) || st.fails >= 2 {
++		st.classic = !st.classic
++		st.fails = 0
++	}
++}
+diff --git a/common/tls/utls_client.go b/common/tls/utls_client.go
+index fceb15b..8162d17 100644
+--- a/common/tls/utls_client.go
++++ b/common/tls/utls_client.go
+@@ -270,9 +270,11 @@ func uTLSClientHelloID(name string) (utls.ClientHelloID, error) {
+ 		return utls.HelloAndroid_11_OkHttp, nil
+ 	case "random":
+ 		return randomFingerprint, nil
+-	case "randomized":
++	case "randomized", "randomizednoalpn":
+ 		return randomizedFingerprint, nil
+ 	default:
+-		return utls.ClientHelloID{}, E.New("unknown uTLS fingerprint: ", name)
++		// STRIDER: fingerprints only Xray knows ("unsafe", ...) used to make the
++		// whole server fail; use the default (chrome) like Xray does for ""
++		return utls.HelloChrome_Auto, nil
+ 	}
+ }
