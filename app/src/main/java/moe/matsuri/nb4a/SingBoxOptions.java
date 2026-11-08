@@ -4232,6 +4232,9 @@ public class SingBoxOptions {
 
         public String flow;
 
+        // STRIDER: VLESS Encryption (patched core)
+        public String encryption;
+
         public String network;
 
         public OutboundTLSOptions tls;
