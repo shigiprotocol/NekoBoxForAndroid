@@ -83,7 +83,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                 .subText(SagerNet.appVersionNameForDisplay)
                                 .setOnClickAction {
                                     requireContext().launchCustomTab(
-                                        "https://github.com/MatsuriDayo/NekoBoxForAndroid/releases"
+                                        "https://github.com/$UPDATE_REPO/releases"
                                     )
                                 }
                                 .build())
@@ -211,6 +211,12 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
             }
         }
 
+        // fix: the update check asked the upstream NekoBox repository, so every
+        // new NekoBox release was offered as an "update". That APK is another
+        // app (other package name and signature): it installs next to STRIDER
+        // and has none of its servers, settings or STRIDER features.
+        private val UPDATE_REPO = "shigiprotocol/NekoBoxForAndroid"
+
         fun checkUpdate(checkPreview: Boolean) {
             runOnIoDispatcher {
                 try {
@@ -220,15 +226,23 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                     }
                     val response = client.newRequest().apply {
                         if (checkPreview) {
-                            setURL("https://api.github.com/repos/MatsuriDayo/NekoBoxForAndroid/releases/tags/preview")
+                            setURL("https://api.github.com/repos/$UPDATE_REPO/releases/tags/preview")
                         } else {
-                            setURL("https://api.github.com/repos/MatsuriDayo/NekoBoxForAndroid/releases/latest")
+                            setURL("https://api.github.com/repos/$UPDATE_REPO/releases/latest")
                         }
                     }.execute()
                     val release = JSONObject(Util.getStringBox(response.contentString))
-                    val releaseName = release.getString("name")
-                    val releaseUrl = release.getString("html_url")
-                    var haveUpdate = releaseName.isNotBlank()
+                    // no release published yet (GitHub answers {"message": "Not Found"}):
+                    // that is "no update", not an error
+                    val releaseName = release.optString("name")
+                    val releaseUrl = release.optString("html_url")
+                    // only a release that carries an APK is an app update (the
+                    // repository also publishes other files, e.g. server tools)
+                    val assets = release.optJSONArray("assets")
+                    val hasApk = assets != null && (0 until assets.length()).any {
+                        assets.optJSONObject(it)?.optString("name").orEmpty().endsWith(".apk", true)
+                    }
+                    var haveUpdate = releaseName.isNotBlank() && hasApk
                     haveUpdate = if (isPreview) {
                         if (checkPreview) {
                             haveUpdate && releaseName != BuildConfig.PRE_VERSION_NAME
